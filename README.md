@@ -71,11 +71,3 @@ make clean
 ```
 
 ---
-
-## ⚙️ Chi tiết cấu hình Makefile
-
-Makefile đã được tối ưu hóa cho môi trường Windows:
-
-- **Shell mặc định**: Thiết lập `SHELL := cmd.exe` để tương thích lệnh dọn dẹp `del` trên cả CMD, PowerShell và Git Bash.
-- **Cờ biên dịch (CXXFLAGS)**: `-std=c++14 -Wall -Wextra -pedantic -O2 -Iinclude` giúp bật kiểm tra lỗi nghiêm ngặt và tối ưu hóa mã nguồn.
-- **Liên kết tĩnh (LDFLAGS)**: `-static` giúp tạo file `.exe` độc lập có thể chạy trực tiếp trên các máy Windows khác mà không thiếu thư viện DLL C++ runtime.
