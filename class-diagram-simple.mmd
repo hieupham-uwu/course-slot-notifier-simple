@@ -1,0 +1,64 @@
+%% ============================================================
+%%  CLASS DIAGRAM (SIMPLE) - COURSE SLOT NOTIFIER
+%%  Chỉ có Observer pattern, không có Strategy, không shared_ptr.
+%%  Tương ứng thư mục simple/ (IObserver.h, Course, Student).
+%%
+%%  Quy ước trình bày:
+%%   - Thuộc tính:  - tenThuocTinh: kieu
+%%   - Phương thức: + tenHam(thamSo: kieu): kieuTraVe
+%%   - Hàm thuần ảo ghi rõ ": virtual <kieu> = 0"
+%%   - Quan hệ ghi nhãn theo tên thành viên liên kết
+%%
+%%  Cách xem: dán vào https://mermaid.live hoặc mở bằng extension
+%%  Mermaid trong VS Code (file .mmd không cần bọc ```mermaid).
+%% ============================================================
+classDiagram
+    direction LR
+
+    %% ---------- Hợp đồng Observer ----------
+    class IObserver {
+        + ~IObserver(): virtual
+        + onSlotAvailable(courseName: string, slots: int): virtual void = 0
+    }
+
+    %% ---------- Subject (Publisher) ----------
+    class Course {
+        - courseName: string
+        - seatCapacity: int
+        - enrolledCount: int
+        - waitlist: vector~IObserver*~
+        - notifyStudents(): void
+        + Course(name: string, capacity: int)
+        + availableSlots(): int
+        + attach(observer: IObserver*): void
+        + detach(observer: IObserver*): void
+        + enroll(count: int): void
+        + drop(): void
+        + waitlistSize(): size_t
+    }
+
+    %% ---------- Concrete Observer ----------
+    class Student {
+        - studentId: string
+        - fullName: string
+        - channelList: vector~string~
+        - printSample: bool
+        - receivedCount: int
+        - sentMessageCount: int
+        + Student(id: string, name: string, channels: vector~string~, shouldPrintSample: bool)
+        + onSlotAvailable(courseName: string, slots: int): void
+        + addChannel(channel: string): void
+        + received(): int
+        + sentMessages(): int
+    }
+
+    %% ---------- Quan hệ ----------
+    Course "1" o-- "*" IObserver : waitlist
+    IObserver <|-- Student
+
+    %% Ghi chú thiết kế (bản đơn giản):
+    %% - Course chỉ biết IObserver*, không biết Student cụ thể.
+    %% - Student tự gửi tin qua channelList (vector<string>), không có
+    %%   interface kênh riêng như bản đầy đủ.
+    %% - drop() chỉ notify khi lớp chuyển từ 0 chỗ trống sang còn chỗ.
+    %% - Thêm kênh mới = thêm một chuỗi vào channelList, Course không đổi.
